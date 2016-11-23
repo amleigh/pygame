@@ -6,7 +6,7 @@ from pygame.locals import Rect, DOUBLEBUF, QUIT, K_ESCAPE, KEYDOWN, K_DOWN, \
     K_LEFT, K_UP, K_RIGHT, KEYUP, K_LCTRL, K_RETURN, FULLSCREEN
 from pygame.locals import *
 
-pygame.init()
+#pygame.init()
 X_MAX=800
 Y_MAX=600
 
