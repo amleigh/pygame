@@ -32,13 +32,18 @@ class Hoop(pygame.sprite.Sprite):
   		pygame.draw.circle(self, self.colour, self.move, self.size, self.thickness)
 
 
-class Monster(pygame.sprite.Sprite): 
+class Fire(pygame.sprite.Sprite): 
 	def __init__(self):
         Sprite.__init__(self)
-        self.image = image.load("helicpter.gif").convert()
+        self.image = image.load("fire.gif").convert()
         self.rect = self.image.get_rect()
 
-    
+    def appear(self, hit):
+    	randX = randint(0, 600)
+    	randY = randint(0, 400)
+    	self.rect.copy = (randX,randY)
+    	appear_final= self.rect.copy
+
 
 class Helicopter(pygame.sprite.Sprite):
 	def __init__(self):
@@ -57,11 +62,15 @@ class Helicopter(pygame.sprite.Sprite):
         if movement in (LEFT, RIGHT):
             self.dx = {LEFT: -v,
                        RIGHT: v}[direction]
+    
     def collision (self, hoop):
     	self.score +=1
-    	return self.rect.colliderect(target)
+    	return self.rect.colliderect(hoop)
 
 
+    def dead(self, death):
+    	if self.rect.colliderect(death):
+    		self.kill()
 
    
 
