@@ -38,7 +38,7 @@ class Fire(pygame.sprite.Sprite):
         self.image = image.load("fire.gif").convert()
         self.rect = self.image.get_rect()
 
-    def appear(self, hit):
+    def appear(self):
     	randX = randint(0, 600)
     	randY = randint(0, 400)
     	self.rect.copy = (randX,randY)
@@ -80,7 +80,9 @@ class Helicopter(pygame.sprite.Sprite):
 def main():
 	pygame.init()
 	target=Hoop()
-	heli= Helicopter()    
+	heli= Helicopter() 
+	obstical=Fire()   
+	pygame.time.delay(10)
 
 	timer=pygame.time.Clock()
 
@@ -89,7 +91,7 @@ def main():
 	pygame.display.set_caption("Move the Helicopter through as many hoops as possible before time runs out.")
 
 	background = pygame.Surface(screen.get_size())
-	background.fill((250, 250, 250))
+	background.fill((0, 0, 0))
 
 	
 	fon = pygame.font.Font(None, 36)
@@ -97,13 +99,49 @@ def main():
 	pygame.display.flip()
 
 	while True:
-		clock.tick=30
-		mixer.Sound(#song).play()
-    	e = event.poll()
-    	if e.type == QUIT:
-        	quit()
-        	break
+		clock.tick(45)
+		#mixer.Sound(#song).play()
+    	for occurance in pygame.event.get():
+           	if occurance.type == QUIT or occurance.key == K_ESCAPE:
+           		sys.exit()
+			if occurance.type == KEYDOWN:
+                if occurance.key == K_DOWN:
+                    heli.move(DOWN)
+                if occurance.key == K_LEFT:
+                    heli.move(LEFT)
+                if occurance.key == K_RIGHT:
+                    heli.move(RIGHT)
+                if occurance.key == K_UP:
+                	heli.move(UP)
+            if occurance.type == KEYUP:
+                    if occurance.key == K_DOWN:
+                        heli.move(DOWN)
+                    if occurance.key == K_LEFT:
+                        heli.move(LEFT)
+                    if occurance.key == K_RIGHT:
+                        heli.move(RIGHT)
+                    if occurance.key == K_UP:
+                        heli.move(UP)
+    	
+    	if pygame.sprite.spritecollide(heli, obstical)= True:
+    		heli.dead(obstical)
+    		game_over=True
+    		print("GAME OVER")
+    		sys.exit()
+    	
+    	if pygame.sprite.spritecollide(heli, target)= True:
+    		target.move()
+    		heli.collision(target)
+    		obstical.appear()
+    		scoretext = fon.render("Score {0}".format(heli.collision.score), 1, (0,0,0))
+    		screen.blit(scoretext, (5, 10))
 
+    	if game_over == True:
+
+#music
+#display score and time
+#set scoer to zero to start
+#set display on screen
 
 
 if __name__ == '__main__': main()
