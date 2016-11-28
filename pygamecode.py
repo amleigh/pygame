@@ -3,39 +3,44 @@ print('42936051')
 
 import random
 import pygame
+import sys
 from pygame.locals import Rect, DOUBLEBUF, QUIT, K_ESCAPE, KEYDOWN, K_DOWN, \
     K_LEFT, K_UP, K_RIGHT, KEYUP, K_LCTRL, K_RETURN, FULLSCREEN
 from pygame.locals import *
 from pygame.sprite import *
 
-DELAY=100
+
 
 
 
 class Hoop(pygame.sprite.Sprite):
 	def __init__(self):
+	    pygame.sprite.Sprite.__init__(self)
 	    self.size = 150
 	    self.colour = (0, 0, 255)
 	    self.thickness = 1
-	    self.rect = self.image.get_rect()
+	    self.image = pygame.Surface((0, 0))
+	    self.circle= pygame.draw.circle(self.image, self.colour, (0,0), self.size, self.thickness)
+	    self.rect = self.circle.get_rect()
 
 	def move(self):
-		randX = randint(0, 600)
-		randY = randint(0, 400)
+		randX = randint(0, 500)
+		randY = randint(0, 500)
 		self.rect.center = (randX,randY)
 		move_final= self.rect.center
 
 
-	def display(self):
-		pygame.draw.circle(self, self.colour, self.move, self.size, self.thickness)
+	#def display(self):
+		#pygame.draw.circle(self, self.colour, self.move, self.size, self.thickness)
 
 
 class Fire(pygame.sprite.Sprite): 
 	def __init__(self):
-		self.image = image.load("fire.gif").convert()
+		pygame.sprite.Sprite.__init__(self)
+		self.image = image.load("fire.bmp").convert()
 		self.rect = self.image.get_rect()
 
-	def appear(self):
+	def appear(self):                                      #create more advanced sub class
 		randX = randint(0, 600)
 		randY = randint(0, 400)
 		self.rect.copy = (randX,randY)
@@ -44,6 +49,7 @@ class Fire(pygame.sprite.Sprite):
 
 class Helicopter(pygame.sprite.Sprite):
 	def __init__(self):
+		pygame.sprite.Sprite.__init__(self)
 		self.image = image.load("helicpter.gif").convert()
 		self.rect = self.image.get_rect()
 		self.score=0
@@ -97,7 +103,7 @@ def main():
 	pygame.mixer.music.play("heli_sound.wav")
 
 	while True:
-		clock.tick(45)
+		timer.tick(45)
 
 		for occurance in pygame.event.get():
 			if occurance.type == QUIT or occurance.key == K_ESCAPE:
@@ -121,32 +127,33 @@ def main():
 					if occurance.key == K_UP:
 						heli.move(UP)
 
-		if pygame.sprite.spritecollide(heli, obstical) = True:
-    		heli.dead(obstical)
-    		game_over=True
-    		end_text= fon.render("GAME OVER!! Score {}".format(heli.collision.score), 1, (250, 250, 250))
-    		text=screen.blit(end_text, (0, 0)))
-    		print(text)
-    		sys.exit()
-    	
-    	if pygame.sprite.spritecollide(heli, target) = True:
-    		target.move()
-    		heli.collision(target)
-    		obstical.appear()
-    		scoretext = fon.render("Score {0}".format(heli.collision.score), 1, (250, 250, 250))
-    		screen.blit(scoretext, (0, 0)))
+		if pygame.sprite.spritecollide(heli, obstical) == True:
+			heli.dead(obstical)
+			game_over=True
+			end_text= fon.render("GAME OVER!! Score {}".format(heli.collision.score), 1, (250, 250, 250))
+			text=screen.blit(end_text, (0, 0))
+			print(text)
+			sys.exit()
 
-    	if game_over == True:
-    		final_text= fon.render("GAME OVER!! Score {}".format(heli.collision.score), 1, (250, 250, 250))
-    		fin=screen.blit(final_text, (0, 0)))
-    		print (fin)
+		if pygame.sprite.spritecollide(heli, target) == True:
+			target.move()
+			heli.collision(target)
+			obstical.appear()
+			scoretext = fon.render("Score {0}".format(heli.collision.score), 1, (250, 250, 250))
+			screen.blit(scoretext, (0, 0))
 
-    
-    	pygame.display.flip()
-#music
+		if game_over == True:
+			final_text= fon.render("GAME OVER!! Score {}".format(heli.collision.score), 1, (250, 250, 250))
+			fin=screen.blit(final_text, (0, 0))
+			print (fin)
+
+
+	pygame.display.flip()
+#music for background and explosion 
 #display score and time
 #set scoer to zero to start
 #set display on screen
 
 
-if __name__ == '__main__': main()
+#if __name__ == '__main__': main()
+main()
