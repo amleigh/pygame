@@ -11,17 +11,20 @@ from pygame.sprite import *
 
 
 
-everything=pygame.sprite.Group()
+#everything=pygame.sprite.Group()
 
 class Hoop(pygame.sprite.Sprite):
 	def __init__(self):
 	    pygame.sprite.Sprite.__init__(self)
-	    self.size = 150
-	    self.colour = (51, 159, 255)
-	    self.thickness = 1
-	    self.image = pygame.Surface((50, 50))
-	    self.circle= pygame.draw.circle(self.image, self.colour, (25,25), self.size, self.thickness)
-	    self.rect = self.image.get_rect()
+	    self.image= pygame.image.load("Hoop.bmp")
+	    self.rect=self.image.get_rect()
+
+	    # self.size = 150
+	    # self.colour = (51, 159, 255)
+	    # self.thickness = 1
+	    # self.image = pygame.Surface((50, 50))
+	    # self.circle= pygame.draw.circle(self.image, self.colour, (400,600), self.size, self.thickness)
+	    # self.rect = self.image.get_rect()
 
 	def move(self):
 		randX = randint(0, 500)
@@ -34,13 +37,13 @@ class Hoop(pygame.sprite.Sprite):
 		#pygame.draw.circle(self, self.colour, self.move, self.size, self.thickness)
 
 
-class Fire(pygame.sprite.Sprite): 
+class Fire(Sprite): 
 	def __init__(self):
-		pygame.sprite.Sprite.__init__(self)
-		self.image = pygame.image.load("fire.bmp")
+		Sprite.__init__(self)
+		self.image = pygame.image.load("fire.bmp").convert_alpha()
 		self.rect = self.image.get_rect()
 
-	def appear(self):                                      #create more advanced sub class
+	def appear(self):                                      
 		randX = randint(0, 600)
 		randY = randint(0, 400)
 		self.rect.copy = (randX,randY)
@@ -50,24 +53,27 @@ class Fire(pygame.sprite.Sprite):
 class Helicopter(pygame.sprite.Sprite):
 	def __init__(self):
 		pygame.sprite.Sprite.__init__(self)
-		pygame.display.set_mode((1,1), pygame.DOUBLEBUF)
-		# self.image = []
-		# self.image.append(pygame.image.load("helicopter.bmp")).convert_alpha()
-		# self.image.append(pygame.image.load("helicopter2.bmp"))
-		self.image=pygame.image.load("helicopter.gif").convert_alpha()
+		#pygame.display.set_mode((1,1), pygame.DOUBLEBUF)
+		self.images = []
+		self.images.append(pygame.image.load("helicopter.bmp"))
+		self.images.append(pygame.image.load("helicopter2.bmp"))
+		#self.image=pygame.image.load("helicopter.gif").convert_alpha()
 
-		#self.index=0
-		#self.images= self.image[0]
-		self.rect = self.image.get_rect()
 		
-		self.score=0
-		self.dx=self.dy=0
+		self.index = 0
+		self.image = self.images[self.index]
+		self.rect = pygame.Rect(5, 5, 64, 64)
+		
 
-	# def update(self):
-	# 	self.image = self.images[self.index]
-	# 	self.index += 1
-	# 	if self.index >= len(self.images):
-	# 		self.index=0
+		self.score=0
+		self.dx=self.dy=50
+
+	def update(self):
+		self.image = self.images[self.index]
+		self.index += 1
+		if self.index >= len(self.images):
+			self.index=0
+		self.image = self.images[self.index]
 
 	def move(self, movement):
 		v=10
@@ -97,29 +103,34 @@ def main():
 	pygame.font.init()
 	pygame.mixer.init()
 
+	screen= pygame.display.set_mode((1000, 900))
+	pygame.display.set_caption("Move the Helicopter through as many hoops as possible before time runs out.")
+
+	fon = pygame.font.Font(None, 36)
+
 	target=Hoop()
 	heli= Helicopter() 
 	obstical=Fire()   
-	pygame.time.delay(10)
+	#pygame.time.delay(10)
 
 	timer=pygame.time.Clock()
 
 	game_over = False 
-	screen= pygame.display.set_mode((800, 600))
-	pygame.display.set_caption("Move the Helicopter through as many hoops as possible before time runs out.")
+	
 
 	background = pygame.Surface(screen.get_size())
 	background.fill((0, 0, 0))
 
 	
-	fon = pygame.font.Font(None, 36)
+	DELAY=10
 	
 	images=RenderPlain(heli, obstical, target)
+
 	#images.draw(screen)
 
 	screen.blit(background, (0, 0))
 	#pygame.display.flip()
-
+	timer.set_timer(USEREVENT + 1, DELAY)
 	
 
 
@@ -155,10 +166,10 @@ def main():
 		# if pygame.sprite.spritecollide(heli, obstical, True) == True:
 		# 	heli.dead(obstical)
 		# 	game_over=True
-		# 	# end_text= fon.render("GAME OVER!! Score {}".format(heli.collision.score), 1, (250, 250, 250))
-		# 	# text=screen.blit(end_text, (0, 0))
-		# 	# print(text)
-		# 	# sys.exit()
+		# 	end_text= fon.render("GAME OVER!! Score {}".format(heli.collision.score), 1, (250, 250, 250))
+		# 	text=screen.blit(end_text, (0, 0))
+		# 	print(text)
+		# 	sys.exit()
 
 		# if pygame.sprite.spritecollide(heli, target, True) == True:
 		# 	target.move()
@@ -182,5 +193,6 @@ def main():
 #set display on screen
 
 
-#if __name__ == '__main__': main()
-main()
+if __name__ == '__main__': 
+	main()
+#main()
