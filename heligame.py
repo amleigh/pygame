@@ -212,7 +212,7 @@ def main():
             sprites.update()
             sprites.draw(screen)
             display.update()
-            
+            break
 
         screen.fill(background)
         t = f.render("Score = " + str(score), False, (250,250,0))
