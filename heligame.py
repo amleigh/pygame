@@ -12,7 +12,7 @@ DELAY = 3000;
 
 background = (0,0,0)   
 
-X_MAX=1000
+X_MAX=900
 Y_MAX=900
 
 LEFT, RIGHT, UP, DOWN = 0, 1, 3, 4
@@ -24,7 +24,7 @@ class Hoop(Sprite):
     def __init__(self):
         Sprite.__init__(self)
         self.image = image.load("Hoop.bmp").convert_alpha()
-        self.rect = self.image.get_rect()
+        self.rect = self.image.get_rect(center=(450,450))
 
     
     def move(self):
@@ -119,100 +119,109 @@ class Helicopter(Sprite):
             
 
 
-#main
-game_over=False
-init()
 
-screen = display.set_mode((X_MAX, Y_MAX))
-display.set_caption("Hit the hoops and don't touch the fire")
+def main():
+    game_over=False
+    init()
+
+    screen = display.set_mode((X_MAX, Y_MAX))
+    display.set_caption("Hit the hoops and don't touch the fire")
 
 
 
 
-f = font.Font(None, 36)
+    f = font.Font(None, 36)
 
-heli = Helicopter()
-target = Hoop()
-obstical=pygame.sprite.Group()
-heli.add(everything)
-sprites = RenderPlain(heli, target, obstical)
+    heli = Helicopter()
+    target = Hoop()
+    obstical=pygame.sprite.Group()
+    heli.add(everything)
+    sprites = RenderPlain(heli, target, obstical)
 
-score = 0
-time.set_timer(USEREVENT + 1, DELAY)
-clock=pygame.time.Clock()
+    score = 0
+    time.set_timer(USEREVENT + 1, DELAY)
+    clock=pygame.time.Clock()
 
-Fire([sprites, obstical])
+    Fire([sprites, obstical])
 
-while True:
-    clock.tick(30)
-    mixer.Sound("heli_sound.wav").play()
-    
-    for event in pygame.event.get():
-        if event.type == QUIT or (event.type == KEYDOWN and event.key == K_ESCAPE):
-            sys.exit()   
-        if not game_over:
-            if event.type == KEYDOWN:
-                if event.key == K_ESCAPE:
-                    sys.exit()
-                if event.key == K_DOWN:
-                    heli.move(DOWN, START)
-                if event.key == K_LEFT:
-                    heli.move(LEFT, START)
-                if event.key == K_RIGHT:
-                    heli.move(RIGHT, START)
-                if event.key == K_UP:
-                    heli.move(UP, START)
 
-                
-                    
-                
-                      
-            if event.type == KEYUP:
-                if event.key == K_DOWN:
-                    heli.move(DOWN, STOP)
-                if event.key == K_LEFT:
-                    heli.move(LEFT, STOP)
-                if event.key == K_RIGHT:
-                    heli.move(RIGHT, STOP)
+    while True:
+        if not game_over: 
+            mixer.Sound("heli_sound.wav").play()
+        
+        for event in pygame.event.get():
+            if event.type == QUIT or (event.type == KEYDOWN and event.key == K_ESCAPE):
+                sys.exit()   
+            if not game_over:
+                if event.type == KEYDOWN:
+                    if event.key == K_ESCAPE:
+                        sys.exit()
+                    if event.key == K_DOWN:
+                        heli.move(DOWN, START)
+                    if event.key == K_LEFT:
+                        heli.move(LEFT, START)
+                    if event.key == K_RIGHT:
+                        heli.move(RIGHT, START)
                     if event.key == K_UP:
-                        heli.move(UP, STOP)
-            elif event.type == USEREVENT +1:
-                target.move()
+                        heli.move(UP, START)                         
+                          
+                if event.type == KEYUP:
+                    if event.key == K_DOWN:
+                        heli.move(DOWN, STOP)
+                    if event.key == K_LEFT:
+                        heli.move(LEFT, STOP)
+                    if event.key == K_RIGHT:
+                        heli.move(RIGHT, STOP)
+                        if event.key == K_UP:
+                            heli.move(UP, STOP)
+                elif event.type == USEREVENT +1:
+                    target.move()
 
-            
-            hit_fire = pygame.sprite.spritecollide(heli, obstical, True)
-            if hit_fire:
-                game_over = True
-                break
+                
+                hit_fire = pygame.sprite.spritecollide(heli, obstical, True)
+                if hit_fire:
+                    game_over = True
+                    break
 
-            if heli.hit(target):
-                Fire([sprites, obstical])
-                target.move()
-                score +=1
+                if heli.hit(target):
+                    Fire([sprites, obstical])
+                    target.move()
+                    score +=1
 
-                for i in obstical:
-                    i.appear()
+                    for i in obstical:
+                        i.appear()
 
-                time.set_timer(USEREVENT + 1, DELAY)
+                    time.set_timer(USEREVENT + 1, DELAY)
 
-   
-    if game_over == True:
-        screen.fill(background)
-        final_text= f.render("GAME OVER!! Score {}".format(str(score)), False, (250, 250, 0))
-        text= screen.blit(final_text, (500, 500))
-        print (text)
-        mixer.Sound("heli_sound.wav").stop() 
-        mixer.Sound("fail.wav").play() 
        
-   
-    screen.fill(background)
-    t = f.render("Score = " + str(score), False, (250,250,0))
-    screen.blit(t, (450, 0))        # draw text to screen.  Can you move it?
+        if game_over == True:
+        
+            
+            # print (text)
+            print ("hi")
+            mixer.Sound("heli_sound.wav").stop() 
+            mixer.Sound("fail.wav").play() 
+             
+            print ('hello')
+            
+           
+            screen.fill(background)
+            final_text= f.render("GAME OVER!! Score {}".format(str(score)), False, (250, 250, 0))
+            text= screen.blit(final_text, (400, 400))           
+            
+            sprites.update()
+            sprites.draw(screen)
+            display.update()
+            
 
-    # update and redraw sprites
-    sprites.update()
-    sprites.draw(screen)
-    display.update()
+        screen.fill(background)
+        t = f.render("Score = " + str(score), False, (250,250,0))
+        screen.blit(t, (400, 0))       
 
-#make fire stay on screen
-#display score and time
+        sprites.update()
+        sprites.draw(screen)
+        display.update()
+
+
+main()
+
